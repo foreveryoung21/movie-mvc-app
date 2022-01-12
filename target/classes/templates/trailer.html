@@ -1,0 +1,309 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js" ></script>
+</head>
+<style>
+    .hidden{
+        display: none;
+    }
+
+	.topnav {
+  background-color: #333;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+/* Style the links inside the navigation bar */
+.topnav a {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+/* Change the color of links on hover */
+.topnav a:hover {
+  background-color: blueviolet;
+  color: black;
+}
+
+/* Add a color to the active/current link */
+.topnav a.active {
+  background-color: #04AA6D;
+  color: white;
+}
+
+ body{
+      font-family: "Audiowide", sans-serif;
+      background-color: aquamarine;
+	  margin: auto;
+    }
+
+#inputs{
+  margin-left: 30px;
+  margin-bottom: 30px;
+}
+
+h2{
+	margin-left:50px;
+	margin-bottom: 30px;
+}
+
+#frame{
+	margin-left: 50px;
+}
+
+#error{
+    margin-left: 40px;
+}
+
+#user{
+    margin-top: 15px;
+    margin-left: 50px;
+
+
+}
+
+</style>
+<body>
+
+	
+	 <div class="topnav">
+  <a class="active" th:onclick="|window.location.href='/home'|" style=" color:white;">Home</a>
+  <a  th:onclick="|window.location.href='/login'|" style=" color:white;">Login</a>
+  <a  th:onclick="|window.location.href='/trailer'|" style=" color:white;">Watch Trailers</a>
+  <a th:onclick="|window.location.href='/movieCompare'|" style=" color:white; " > Movie Comparison</a>
+  <a  th:onclick="|window.location.href='/addcinema'|" style=" color:white;  "> Add Cinema</a>
+  <a  th:onclick="|window.location.href='/allcinema'|" style=" color:white;"> List Cinema</a>
+   <a  th:onclick="|window.location.href='/allmovies'|" style=" color:white;"> Watch Later</a>
+    <a  th:onclick="|window.location.href='/historyList'|" style=" color:white;"> Watch History</a>
+   <a  th:onclick="|window.location.href='/register'|" style=" color:white;">Register</a>
+   <a  th:onclick="|window.location.href='/logout'|" style=" color:white;">Log Out</a>
+     <div sec:authorize="isAuthenticated()" id="user"> 
+       <span sec:authentication ="principal.authorities" style=" color:red;">Roles: </span>
+       <span sec:authentication ="name" style=" color:red;" >Username</span>
+
+
+  </div>
+
+</div>
+   
+<div id="mymovieapp">
+
+
+
+
+<h2>Movie Trailers</h2>
+
+<div id="inputs">
+      <input type="text" v-model="searchKey">
+      <button v-on:click="searchMovies" id="search" class="btn btn-primary"> search</button>
+
+</div>
+
+<div id="error">
+
+
+</div>
+
+
+      <div id="movieList">
+        <ul >
+
+            <li v-for="item in moviesList">
+                <div id="movie">
+                  <movie-detail v-bind:movie="item"></movie-detail>
+                  
+                </div>
+                
+            </li>
+        </ul>
+
+      </div>
+    </div>
+   <div id="frame" >
+
+
+
+   </div>
+   <script>
+
+
+
+Vue.component('movie-detail',{
+
+props:['movie'],
+
+template:`
+<div>
+
+	<div class="card text-white bg-dark mb-3"  style="width: 18rem;">
+  <img class="card-img-top" :src="url" alt="Card image cap">
+  <div class="card-body">
+	<h5 class="card-title">{{movie.title}}</h5>
+	<button id="trailer" :value="value" class="btn btn-primary" >view trailer</button> 
+	</div>
+  </div>
+
+
+
+</div>
+`,
+data: function() {
+    return  {
+      url:'https://image.tmdb.org/t/p/w500'+this.movie.poster_path,
+      value:this.movie.id
+    }
+},
+
+methods:{
+
+names(){
+
+
+
+    console.log(this.url);
+}
+
+}
+
+});
+
+new Vue({
+
+el:"#mymovieapp",
+data:{
+    searchKey:'',
+    moviesList:[]
+    
+}
+,
+methods:{
+
+    
+    
+    searchMovies(){
+
+       document.getElementById("frame").classList.add('hidden');
+      
+        axios.get('https://api.themoviedb.org/3/search/movie?api_key=bd9efc4ebe8ad9d2ff2b16778ae7a1d0&query='+this.searchKey).then(resp => {
+           
+            let arrayResult = resp.data.results.length;
+            if(arrayResult===0){
+                let divError= document.getElementById("error");
+					divError.innerHTML="movie entered not found";
+					divError.style.color="red";
+               
+            }else{
+                document.getElementById("error").innerHTML="";
+            }
+
+     
+           this.moviesList=resp.data.results;
+
+            });
+  
+            document.getElementById("movieList").classList.remove('hidden');
+    },
+
+  
+  
+
+    
+
+}
+
+
+})
+
+
+
+document.addEventListener("click",function(event){
+
+if(event.target.id=="trailer"){
+    frame.classList.remove('hidden');
+    let movieId= event.target.getAttribute("value");
+    axios.get(`https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=bd9efc4ebe8ad9d2ff2b16778ae7a1d0`).then(resp => {
+
+    // finish here with adding a frame 
+
+        document.getElementById("movieList").classList.add('hidden');
+        let frame = document.createElement("iframe");
+   
+        document.getElementById('frame').appendChild(frame);
+        let url= "https://www.youtube.com/embed/";
+        let movieKey=resp.data.results[0].key;
+        let fullPath = url+movieKey;
+        frame.setAttribute("width","900");
+        frame.setAttribute("height","600");
+        frame.setAttribute("src",fullPath);
+        
+
+        });
+}
+
+})
+
+document.addEventListener("click",function(event){
+
+
+if(event.target.id=="trailer"){
+
+let movieId= event.target.getAttribute("value");
+axios.get(`https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=bd9efc4ebe8ad9d2ff2b16778ae7a1d0`).then(resp => {
+
+// finish here with adding a frame 
+
+    let url= "https://www.youtube.com/embed/";
+    let movieKey=resp.data.results[0].key;
+    let fullPath = url+movieKey;
+    let site = resp.data.results[0].site;
+    let name = resp.data.results[0].name;
+    let language = resp.data.results[0].iso_639_1;
+
+  
+
+    let movie = {
+        name:name,
+        path:fullPath,
+        website:site,
+        language:language
+    }
+
+    console.log(movie);
+    axios.post("http://localhost:8080/trailer",movie)
+		.catch(error => {
+  alert(error);
+});
+
+
+
+
+    });
+
+
+}
+
+})
+
+
+
+
+
+       
+   </script>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>  
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> 
+	
+</body>
+</html>

@@ -1,0 +1,644 @@
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Movie Comparison</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide">
+</head>
+
+<style>
+
+
+
+#search{
+margin-bottom: 50px;
+margin-top: 30px;
+
+}
+
+.topnav {
+  background-color: #333;
+  overflow: hidden;
+
+}
+
+/* Style the links inside the navigation bar */
+.topnav a {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+/* Change the color of links on hover */
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+/* Add a color to the active/current link */
+.topnav a.active {
+  background-color: #04AA6D;
+  color: white;
+}
+
+#app{
+	margin-left: 550px;
+}
+
+#app2{
+	margin-left: 100px;
+}
+
+
+#header{
+	background-color: aqua;
+	font-family: "Audiowide", sans-serif;
+	
+}
+
+input{
+	margin-left: 20px;
+	margin-bottom: 20px;
+	border-radius: 5px;
+	padding: 3px;
+}
+
+button{
+	margin-left: 10px;
+	padding: 100px;
+}
+
+body{
+	font-family: "Audiowide", sans-serif;
+}
+
+#compare{
+	margin-left: 900px;
+	margin-top: 10px;
+}
+
+#user{
+    margin-top: 15px;
+    margin-left: 50px;
+
+
+}
+
+
+
+</style>
+<body>
+<div class="topnav">
+  <a class="active" th:onclick="|window.location.href='/home'|" style=" color:white;">Home</a>
+  <a  th:onclick="|window.location.href='/login'|" style=" color:white;">Login</a>
+  <a  th:onclick="|window.location.href='/trailer'|" style=" color:white;">Watch Trailers</a>
+  <a th:onclick="|window.location.href='/movieCompare'|" style=" color:white; " > Movie Comparison</a>
+  <a  th:onclick="|window.location.href='/addcinema'|" style=" color:white;  "> Add Cinema</a>
+  <a  th:onclick="|window.location.href='/allcinema'|" style=" color:white;"> List Cinema</a>
+   <a  th:onclick="|window.location.href='/allmovies'|" style=" color:white;"> Watch Later</a>
+    <a  th:onclick="|window.location.href='/historyList'|" style=" color:white;"> Watch History</a>
+   <a  th:onclick="|window.location.href='/register'|" style=" color:white;">Register</a>
+   <a  th:onclick="|window.location.href='/logout'|" style=" color:white;">Log Out</a>
+     <div sec:authorize="isAuthenticated()" id="user"> 
+       <span sec:authentication ="principal.authorities" style=" color:red;">Roles: </span>
+       <span sec:authentication ="name" style=" color:red;" >Username</span>
+
+
+  </div>
+
+</div>
+<div id="header">
+	<h1 style="text-align:center;">Movie Comparison</h1>
+
+
+</div>
+
+
+
+
+	
+	
+	<div id="app" style="display: inline-block;">
+
+	
+
+	</div>
+
+	
+	
+
+	
+
+	
+	<div id="app2" style="display: inline-block;">
+
+
+	</div>
+
+    <button class ="btn btn-primary" id="compare">Compare all</button>
+
+
+
+
+
+	<script src="https://unpkg.com/vue@next"></script>
+	<script>
+	
+	
+
+	let app2=Vue.createApp({
+
+
+	template:`
+	
+	<div>
+
+<custom-form :movie="moviesList"></custom-form> 
+	<div id="search">
+	
+    <input type="text" v-model="searchKey" >
+	<button class ="btn btn-primary" v-on:click="searchMovies" >Search</button>
+	<div><h5 id="error2"></h5></div>
+	
+</div>
+
+
+	
+
+	<div>
+	
+	<label>Movie Rating: </label>
+<input type="text" :value="moviesList.imdbRating" id="rating2">
+<button class ="btn btn-primary"  id="compare1"  style="display: inline-block;" >Compare</button>
+	
+	</div>
+	<div>
+	
+	<label>MetaScore: </label>
+<input type="text" :value="moviesList.Metascore"  id="meta2">
+<button class ="btn btn-primary"  id="compare2"  style="display: inline-block;" >Compare</button>
+	
+	</div>
+	<div>
+	
+	<label>Box Office: </label>
+<input type="text" :value="moviesList.BoxOffice"  id="box2">
+<button class ="btn btn-primary"  id="compare3"  style="display: inline-block;" >Compare</button>
+	
+	</div>
+	<div>
+	
+	<label>IMDB Votes: </label>
+<input type="text" :value="moviesList.imdbVotes" id="votes2">
+<button class ="btn btn-primary"  id="compare4"  style="display: inline-block;" >Compare</button>
+	
+	</div>
+	
+
+	
+	</div>
+	
+`,
+
+	  data: function () {
+    return {
+      searchKey:'',
+		word:"hellword",
+		moviesList:{}
+    }
+  },
+	methods:{
+
+		searchMovies(){
+
+			var url ='http://www.omdbapi.com/?t='+this.searchKey+'&apikey=993ea234'
+			fetch(url)
+			.then(response=>response.json())
+			.then(data=>{
+
+				if(data.Response ==="True"){
+					document.getElementById("error2").innerHTML="";
+					
+				}else{
+					let divError= document.getElementById("error2");
+					divError.innerHTML="movie entered not found";
+					divError.style.color="red";
+				}
+
+
+
+				this.moviesList=data;
+				console.log(data)
+				console.log(this.moviesLists)
+				console.log(this.searchKey)
+
+				
+			})
+		},
+
+
+		
+	
+
+	}
+
+	})
+	
+	app2.component('custom-form',{
+
+		template:`
+	<div>
+
+
+		
+		
+			<div><h1>{{movie.Title}}</h1></div>
+			
+			<div>
+	           <img v-bind:src="movie.Poster" >
+
+			</div>
+		
+			
+		
+	</div>
+		
+	
+			
+		`
+		,
+
+			  data: function () {
+    return {
+      imbdRate:'',
+		word:"hellword",
+		moviesList:{}
+    }
+  }
+  ,
+
+		props:['movie'],
+		methods:{
+			
+		}
+	})
+	app2.mount('#app2')
+
+
+
+let app=Vue.createApp({
+
+
+	template:`
+	
+	<div>
+
+<custom-form :movie="moviesList"></custom-form> 
+
+<div id="search">
+	
+    <input type="text" v-model="searchKey"  >
+	<button class ="btn btn-primary" v-on:click="searchMovies" >Search</button>
+	<div><h5 id="error"></h5></div>
+	
+
+	
+	
+	
+</div>
+	
+
+	<div>
+	
+	<label>Movie Rating: </label>
+<input type="text" :value="moviesList.imdbRating" id="rating" >
+
+
+	
+	</div>
+
+		<div>
+	
+	<label>MetaScore: </label>
+<input type="text" :value="moviesList.Metascore" id="meta" >
+	
+	</div>
+	<div>
+	
+	<label>Box Office: </label>
+<input type="text" :value="moviesList.BoxOffice"  id="box">
+	
+	</div>
+
+
+	<div>
+	
+	<label>IMDB Votes: </label>
+<input type="text" :value="moviesList.imdbVotes" id="votes">
+
+	
+	</div>
+
+
+
+
+
+
+	
+	
+
+	
+	</div>
+	
+`,
+
+	  data: function () {
+    return {
+      searchKey:'',
+		word:"hellword",
+		moviesList:{}
+    }
+  },
+	methods:{
+
+		searchMovies(){
+
+			var url ='http://www.omdbapi.com/?t='+this.searchKey+'&apikey=993ea234'
+			fetch(url)
+			.then(response=>response.json())
+			.then(data=>{
+
+				if(data.Response ==="True"){
+					document.getElementById("error").innerHTML="";
+					
+				}else{
+					let divError= document.getElementById("error");
+					divError.innerHTML="movie entered not found";
+					divError.style.color="red";
+				}
+
+				this.moviesList=data;
+				console.log(data)
+				console.log(this.moviesLists)
+				console.log(this.searchKey)
+
+				
+			})
+		},
+
+
+		
+	
+
+	}
+
+	})
+	
+	app.component('custom-form',{
+
+		template:`
+		<div>
+			<h1>{{movie.Title}}</h1>
+
+		</div>
+
+		<div id="poster">
+			  <img v-bind:src="movie.Poster" >
+
+
+		</div>
+		
+		`
+		,
+
+			  data: function () {
+    return {
+      imbdRate:'',
+		word:"hellword",
+		moviesList:{}
+    }
+  }
+  ,
+
+		props:['movie'],
+		methods:{
+			clicked(){
+				document.querySelector('#click').style.background="red"
+				let value = document.querySelector('#rating2').value;
+
+				console.log(value);
+			}
+		}
+	})
+	app.mount('#app')
+
+	document.getElementById("compare1").addEventListener("click", function() {
+			let value = document.querySelector('#rating').value;
+			let value2 = document.querySelector('#rating2').value;
+			
+				if(value>value2){
+				document.getElementById("rating").style.backgroundColor="aqua";
+			}else {
+				document.getElementById("rating").style.backgroundColor="red";
+			}
+
+
+			if(value2>value){
+				document.getElementById("rating2").style.backgroundColor="aqua";
+			}else {
+				document.getElementById("rating2").style.backgroundColor="red";
+			}
+
+				if(value==value2){
+				document.getElementById("rating").style.backgroundColor="yellow";
+				document.getElementById("rating2").style.backgroundColor="yellow";
+			}
+});
+
+
+
+	document.getElementById("compare2").addEventListener("click", function() {
+			let value = document.querySelector('#meta').value;
+			let value2 = document.querySelector('#meta2').value;
+			
+				if(value>value2){
+				document.getElementById("meta").style.backgroundColor="aqua";
+			}else {
+				document.getElementById("meta").style.backgroundColor="red";
+			}
+
+
+			if(value2>value){
+				document.getElementById("meta2").style.backgroundColor="aqua";
+			}else {
+				document.getElementById("meta2").style.backgroundColor="red";
+			}
+
+				if(value==value2){
+				document.getElementById("meta").style.backgroundColor="yellow";
+				document.getElementById("meta2").style.backgroundColor="yellow";
+			}
+			
+});
+
+
+
+	document.getElementById("compare3").addEventListener("click", function() {
+			let value = document.querySelector('#box').value;
+			let value2 = document.querySelector('#box2').value;
+			
+				if(value>value2){
+				document.getElementById("box").style.backgroundColor="aqua";
+			}else {
+				document.getElementById("box").style.backgroundColor="red";
+			}
+
+
+			if(value2>value){
+				document.getElementById("box2").style.backgroundColor="aqua";
+			}else {
+				document.getElementById("box2").style.backgroundColor="red";
+			}
+
+			if(value==value2){
+				document.getElementById("box").style.backgroundColor="yellow";
+				document.getElementById("box2").style.backgroundColor="yellow";
+			}
+});
+
+
+
+	document.getElementById("compare4").addEventListener("click", function() {
+			let value = document.querySelector('#votes').value;
+			let value2 = document.querySelector('#votes2').value;
+			
+				if(value>value2){
+				document.getElementById("votes").style.backgroundColor="aqua";
+			}else {
+				document.getElementById("votes").style.backgroundColor="red";
+			}
+
+
+			if(value2>value){
+				document.getElementById("votes2").style.backgroundColor="aqua";
+			}else {
+				document.getElementById("votes2").style.backgroundColor="red";
+			}
+
+			if(value==value2){
+				document.getElementById("votes").style.backgroundColor="yellow";
+				document.getElementById("votes2").style.backgroundColor="yellow";
+			}
+});
+
+
+
+document.getElementById('compare').addEventListener("click",function(){
+	let rating= document.querySelector('#rating').value;
+	let rating2 = document.querySelector('#rating2').value;
+	let meta = document.querySelector('#meta').value;
+	let meta2 = document.querySelector('#meta2').value;
+	let box = document.querySelector('#box').value;
+	let box2 = document.querySelector('#box2').value;
+	let votes= document.querySelector('#votes').value;
+	let votes2 = document.querySelector('#votes2').value;
+	
+
+	if(rating>rating2){
+				document.getElementById("rating").style.backgroundColor="aqua";
+			}else {
+				document.getElementById("rating").style.backgroundColor="red";
+			}
+
+
+			if(rating2>rating){
+				document.getElementById("rating2").style.backgroundColor="aqua";
+			}else {
+				document.getElementById("rating2").style.backgroundColor="red";
+			}
+
+				if(rating==rating2){
+				document.getElementById("rating").style.backgroundColor="yellow";
+				document.getElementById("rating2").style.backgroundColor="yellow";
+			}
+
+
+			if(meta>meta2){
+				document.getElementById("meta").style.backgroundColor="aqua";
+			}else {
+				document.getElementById("meta").style.backgroundColor="red";
+			}
+
+
+			if(meta2>meta){
+				document.getElementById("meta2").style.backgroundColor="aqua";
+			}else {
+				document.getElementById("meta2").style.backgroundColor="red";
+			}
+
+				if(meta==meta2){
+				document.getElementById("meta").style.backgroundColor="yellow";
+				document.getElementById("meta2").style.backgroundColor="yellow";
+			}
+			
+			if(box>box2){
+				document.getElementById("box").style.backgroundColor="aqua";
+			}else {
+				document.getElementById("box").style.backgroundColor="red";
+			}
+
+
+			if(box2>box){
+				document.getElementById("box2").style.backgroundColor="aqua";
+			}else {
+				document.getElementById("box2").style.backgroundColor="red";
+			}
+
+			if(box==box2){
+				document.getElementById("box").style.backgroundColor="yellow";
+				document.getElementById("box2").style.backgroundColor="yellow";
+			}
+
+
+			if(votes>votes2){
+				document.getElementById("votes").style.backgroundColor="aqua";
+			}else {
+				document.getElementById("votes").style.backgroundColor="red";
+			}
+
+
+			if(votes2>votes){
+				document.getElementById("votes2").style.backgroundColor="aqua";
+			}else {
+				document.getElementById("votes2").style.backgroundColor="red";
+			}
+
+			if(votes==votes2){
+				document.getElementById("votes").style.backgroundColor="yellow";
+				document.getElementById("votes2").style.backgroundColor="yellow";
+			}
+
+
+
+
+
+
+			
+
+			
+})
+
+	
+	</script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+
+</body>
+</html>

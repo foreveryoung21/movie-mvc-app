@@ -1,0 +1,104 @@
+<html>
+
+<head>
+  <title>Update Cinema</title>
+  	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide">
+    <style>
+    
+    body{
+      font-family: "Audiowide", sans-serif;
+      background-color: aquamarine;
+    }
+
+label {
+    display: inline-block;
+    width: 150px;
+}
+   
+#form{
+   display: table;
+margin: auto;
+margin-top: 100px;
+  
+}
+h2{
+  margin-left: 700px;
+}
+
+button{
+
+margin-left: 60px;
+margin-top: 10px;
+}
+
+.field{
+  margin-bottom: 10px;
+}
+
+    
+    </style>
+</head>
+
+<body>
+
+  <h2>Update Cinema</h2>
+  
+<div id="form">
+
+ <form th:action="@{/addcinema}" th:object="${cinema}" method="POST">
+<div class="field">
+  <label>Cinema Name</label>
+<input type="text" th:field="*{cinemaName}" class="form-control">
+</div>
+
+<div class="field"> 
+<label>City</label>
+<input type="text" th:field="*{city}" class="form-control">
+</div>
+
+
+<div class="field">
+<label>Cinea Type</label>
+</div>
+
+
+<div class="field" >
+    <select th:field="*{cinemaType}">
+      <option value="https://ichef.bbci.co.uk/news/624/mcs/media/images/73800000/jpg/_73800200__nor3824bcopyhy.jpg">IMAX</option>
+      <option value="https://files.structurae.net/files/photos/5256/2017-08-28/dsc06917.jpg">Multiplex</option>
+      <option value="https://media.gq-magazine.co.uk/photos/5efdaca4563a6bbe91ce0ab3/master/pass/20200702-cinema-04.jpg">Drive-In</option>
+
+
+      </select>
+
+</div>
+
+
+<div>
+<label>Address</label>
+<input type="text" th:field="*{address}" class="form-control">
+</div>
+
+
+
+<button class ="btn btn-secondary">Update Cinema</button>
+  </form>
+
+
+
+
+
+</div>
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+
+</body>
+
+</html>

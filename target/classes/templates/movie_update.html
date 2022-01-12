@@ -1,0 +1,171 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js" ></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide">
+    <style>
+        .hidden{
+            display: none;
+        }
+
+ body{
+      font-family: "Audiowide", sans-serif;
+      background-color: aquamarine;
+    }
+
+.form{
+   display: table;
+margin: auto;
+margin-top: 100px;
+  
+}
+
+h1{
+	margin-bottom: 40px;
+}
+    </style>
+</head>
+<body>
+
+    <div id="app" class="form">
+		<div>
+			<h1>Search For Movie To Update</h1>
+		</div>
+
+        
+        
+      
+             <div id="inputs">
+          <input type="text" v-model="searchKey">
+            <button class ="btn btn-primary" v-on:click="searchMovies" >Search</button>
+        
+           </div>
+
+           <div id="error">
+         
+
+           </div>
+        
+
+            <form th:action="@{/updatemovie/{id}(id=${movie.id})}" method="POST" th:object="${movie}" >
+			 <div class="hidden">
+                <label for="" >id:</label>
+                <input type="text" name=""  th:field="*{id}">
+            </div>
+
+			<div class="hidden">
+                <label for="">Title:</label>
+                <input type="text" name="" id="title" th:field="*{title}">
+            </div>
+
+            <div class="hidden">
+                <label for="">Year:</label>
+                <input type="text" name="" id="year"  th:field="*{year}">
+            </div>
+
+            <div class="hidden">
+                <label for="">Poster:</label>
+                <input type="text" name="" id="poster" th:field="*{poster}">
+            </div>
+
+          
+
+            <div class="card text-white bg-dark mb-3"  style="width: 18rem;">
+                <img class="card-img-top" v-bind:src="film.Poster">
+                <div class="card-body">
+                <h5 class="card-title">{{film.Title}}</h5>
+                <button class ="btn btn-secondary" id="btn" >Update Movie</button>
+                </div>
+                </div>
+    
+        
+        </form>
+
+      
+          
+        
+        
+        
+        </div>
+        
+  
+    <script>
+
+
+
+
+new Vue ({
+
+el:"#app",
+data:{
+    searchKey:'',
+    moviesList:[],
+    film:{}
+},
+methods:{
+
+    searchMovies(){
+
+        var url ='http://www.omdbapi.com/?t='+this.searchKey+'&apikey=993ea234'
+        fetch(url)
+        .then(response=>response.json())
+        .then(data=>{
+
+          if(data.Response ==="True"){
+					document.getElementById("error").innerHTML="";
+					
+				}else{
+					let divError= document.getElementById("error");
+					divError.innerHTML="movie entered not found";
+					divError.style.color="red";
+				}
+
+            this.moviesList=data;
+            this.film=data;
+			document.getElementById("title").value=this.film.Title;
+			document.getElementById("year").value=this.film.Year;
+			document.getElementById("poster").value=this.film.Poster;
+		
+            
+		})
+		
+	
+    },
+
+   
+
+
+
+
+}
+
+
+
+
+
+
+
+
+})
+
+
+document.getElementById('btn').addEventListener('click',function(){
+ console.log(document.getElementById("title").value);
+ console.log(document.getElementById('year').value);
+ console.log(document.getElementById('poster').value);
+})
+
+
+
+    </script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+</body>
+</html>

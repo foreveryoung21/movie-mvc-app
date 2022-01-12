@@ -1,0 +1,97 @@
+<html>
+
+
+
+<head>
+  <title>Register</title>
+  	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide">
+    <style>
+    
+    body{
+      font-family: "Audiowide", sans-serif;
+      background-color: aquamarine;
+    }
+
+label {
+    display: inline-block;
+    width: 150px;
+}
+   
+#form{
+   display: table;
+margin: auto;
+margin-top: 100px;
+  
+}
+h2{
+  margin-left: 750px;
+}
+
+button{
+
+margin-left: 100px;
+margin-top: 10px;
+}
+
+#field{
+  margin-bottom: 10px;
+}
+
+.form-check{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+    
+    </style>
+</head>
+
+<body>
+
+  <h2 >Register User</h2>
+
+  <div id="form" class="was-validated">
+
+     <form th:action="@{/process_register}" method="POST" th:object="${user}" >
+  
+
+  
+    <div id="field">
+
+      <label for="">Username</label>
+      <input type="text" th:field="*{username}" class="form-control" required>
+      <div class="invalid-feedback">Enter Username</div>
+
+    </div>
+  
+     <div>
+
+      <label for="">Password</label>
+      <input type="password" th:field="*{password}" class="form-control" required minlength="8">
+      <div class="invalid-feedback">Enter password minimum length 8</div>
+
+    </div>
+
+     <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" th:field="*{checked}" checked>
+        <label class="form-check-label" for="flexCheckChecked">
+          Admin Sign Up
+        </label>
+      </div>
+
+
+
+  
+    <div>
+      <button class="btn btn-secondary">Sign Up</button>
+    </div>
+  
+  </form>
+
+
+  </div>
+
+</body>
+
+</html>

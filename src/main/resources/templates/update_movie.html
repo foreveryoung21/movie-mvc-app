@@ -1,0 +1,211 @@
+<html>
+
+<head>
+  <title>Update Movie</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide">
+<script src="http://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+    
+    body{
+      font-family: "Audiowide", sans-serif;
+      background-color: aquamarine;
+    }
+
+label {
+    display: inline-block;
+    width: 150px;
+}
+   
+#form{
+   display: table;
+margin: auto;
+margin-top: 100px;
+  
+}
+h2{
+  margin-left: 700px;
+}
+
+button{
+
+margin-left: 60px;
+margin-top: 10px;
+}
+
+.field{
+  margin-bottom: 10px;
+}
+
+    
+    </style>
+</head>
+
+<body>
+
+  <h2>Update Cinema</h2>
+  
+  <div id="form">
+
+    <form th:action="@{/film}" th:object="${movie}" method="POST">
+<div class="field">
+  <input type="hidden" th:field="*{id}"/>
+  <label>Title: </label>
+<input type="text" th:field="*{title}" class="form-control">
+</div>
+
+<div class="field">
+<label>Year: </label>
+<input type="text" th:field="*{year}" class="form-control" >
+</div>
+
+
+
+<button class ="btn btn-secondary" >Update Movie</button>
+  </form>
+  </div>
+  
+
+<div id="app">
+
+
+<div class="topnav">
+  <a class="active">Home</a>
+  <a  th:onclick="|window.location.href='/login'|" style=" color:white;">Login</a>
+  <a  th:onclick="|window.location.href='/trailer'|" style=" color:white;">Watch Trailers</a>
+  <a th:onclick="|window.location.href='/movieCompare'|" style=" color:white; " > Movie Comparison</a>
+  <a href="#news" style=" color:white;" >Movie</a>
+  <a  th:onclick="|window.location.href='/addcinema'|" style=" color:white;  "> Add Cinema</a>
+  <a  th:onclick="|window.location.href='/allcinema'|" style=" color:white;"> List Cinema</a>
+   <a  th:onclick="|window.location.href='/allmovies'|" style=" color:white;"> Watch List</a>
+   <a  th:onclick="|window.location.href='/register'|" style=" color:white;">Register</a>
+   
+</div>
+
+	 <div id="inputs">
+  <input type="text" v-model="searchKey">
+	<button class ="btn btn-primary" v-on:click="searchMovies" >Search</button>
+
+   </div>
+
+	<h1>Results</h1>
+	<ul>
+		<li v-for="item in moviesList.Search ">
+
+			<movie-detail v-bind:movie="item" ></movie-detail>
+		</li>
+
+
+	</ul>
+
+
+
+</div>
+
+
+<script>
+
+Vue.component('movie-detail',{
+
+	props:['movie'],
+	template:`
+
+
+
+	<div class="card text-white bg-dark mb-3"  style="width: 18rem;">
+  <img class="card-img-top" v-bind:src="movie.Poster" alt="Card image cap">
+  <div class="card-body">
+    <h5 class="card-title">{{movie.Title}}</h5>
+    <a href="#" class="btn btn-primary" v-on:click="postData">Add To Watch List</a>
+  </div>
+</div>
+	
+
+	
+
+
+	`,
+
+	methods:{
+
+		postData(){
+			let movie = {
+				Title:this.movie.Title,
+				Year:this.movie.Year,
+
+
+			}
+
+			console.log(movie);
+
+		axios.post("http://localhost:8080/film",movie)
+		.catch(error => {
+  alert(error);
+});
+	
+			
+
+			
+			
+
+		
+
+		
+
+		}
+	
+
+	}
+
+
+
+
+})
+
+
+new Vue ({
+
+	el:"#app",
+	data:{
+		searchKey:'',
+		moviesList:[]
+	},
+	methods:{
+
+		searchMovies(){
+
+			var url ='http://www.omdbapi.com/?s='+this.searchKey+'&apikey=993ea234'
+			fetch(url)
+			.then(response=>response.json())
+			.then(data=>{
+
+				this.moviesList=data;
+			})
+		},
+
+		
+
+
+	
+
+	}
+
+
+
+
+
+
+
+
+})
+
+</script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+
+</body>
+
+</html>

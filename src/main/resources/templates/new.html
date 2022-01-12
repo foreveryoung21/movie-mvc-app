@@ -1,0 +1,203 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js" ></script>
+</head>
+<style>
+    .hidden{
+        display: none;
+    }
+
+</style>
+<body>
+
+ 
+   
+    <div id="mymovieapp">
+      <input type="text" v-model="searchKey">
+      <button v-on:click="searchMovies" id="search"> search</button>
+      <h2>Movie Trailers</h2>
+
+
+      <div id="movieList">
+        <ul >
+
+            <li v-for="item in moviesList">
+                <div id="movie">
+                  <movie-detail v-bind:movie="item"></movie-detail>
+                  
+                </div>
+                
+            </li>
+        </ul>
+
+      </div>
+    </div>
+   <div id="frame" >
+
+
+
+   </div>
+   <script>
+
+
+
+Vue.component('movie-detail',{
+
+props:['movie'],
+
+template:`
+<div>
+{{movie.id}}
+<img :src="url" alt="" width="500" height="600">
+<div>
+    
+<button id="trailer" :value="value">view trailer</button> 
+</div>
+
+
+</div>
+`,
+data: function() {
+    return  {
+      url:'https://image.tmdb.org/t/p/w500'+this.movie.poster_path,
+      value:this.movie.id
+    }
+},
+
+methods:{
+
+names(){
+
+
+
+    console.log(this.url);
+}
+
+}
+
+});
+
+new Vue({
+
+el:"#mymovieapp",
+data:{
+    searchKey:'',
+    moviesList:[]
+    
+}
+,
+methods:{
+
+    searchMovies(){
+
+       document.getElementById("frame").classList.add('hidden');
+      
+        axios.get('https://api.themoviedb.org/3/search/movie?api_key=bd9efc4ebe8ad9d2ff2b16778ae7a1d0&query='+this.searchKey).then(resp => {
+            this.moviesList=resp.data.results;
+            });
+  
+            document.getElementById("movieList").classList.remove('hidden');
+    }
+
+    
+
+}
+
+
+})
+
+
+
+document.addEventListener("click",function(event){
+
+if(event.target.id=="trailer"){
+    frame.classList.remove('hidden');
+    let movieId= event.target.getAttribute("value");
+    axios.get(`https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=bd9efc4ebe8ad9d2ff2b16778ae7a1d0`).then(resp => {
+
+    // finish here with adding a frame 
+    
+        document.getElementById("movieList").classList.add('hidden');
+        let frame = document.createElement("iframe");
+   
+        document.getElementById('frame').appendChild(frame);
+        let url= "https://www.youtube.com/embed/";
+        let movieKey=resp.data.results[0].key;
+        let fullPath = url+movieKey;
+        frame.setAttribute("width","900");
+        frame.setAttribute("height","600");
+        frame.setAttribute("src",fullPath);
+
+    
+
+      
+
+
+        });
+}
+
+})
+
+
+
+
+document.addEventListener("click",function(event){
+
+
+if(event.target.id=="trailer"){
+
+let movieId= event.target.getAttribute("value");
+axios.get(`https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=bd9efc4ebe8ad9d2ff2b16778ae7a1d0`).then(resp => {
+
+// finish here with adding a frame 
+
+    let url= "https://www.youtube.com/embed/";
+    let movieKey=resp.data.results[0].key;
+    let fullPath = url+movieKey;
+    let site = resp.data.results[0].site;
+    let name = resp.data.results[0].name;
+    let language = resp.data.results[0].iso_639_1;
+
+    let movie = {
+        name:name,
+        path:fullPath,
+        website:site,
+        language:language
+    }
+
+    console.log(movie);
+    axios.post("http://localhost:8080/trailer",movie)
+		.catch(error => {
+  alert(error);
+});
+
+
+
+
+    });
+
+
+}
+
+})
+
+
+
+
+
+
+
+
+
+
+
+
+       
+   </script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>   
+</body>
+</html>

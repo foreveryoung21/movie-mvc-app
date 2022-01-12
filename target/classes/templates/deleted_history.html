@@ -1,0 +1,47 @@
+<html>
+
+<head>
+	<title>Deleted History</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide">
+	<style>
+	
+	body{
+      font-family: "Audiowide", sans-serif;
+      background-color: aquamarine;
+    }
+	
+	.card{
+		margin: auto;
+	}
+
+	h1{
+		margin-left: 750px;
+		margin-bottom: 50px;
+	}
+	</style>
+	
+</head>
+
+<body>
+	<h1> Deleted Watch History</h1>
+
+
+  <div class="card" style="width: 40rem;">
+    <div class="card-body">
+      <h5 class="card-title" th:text="${history.name}"></h5>
+    </div>
+    <ul class="list-group list-group-flush">
+	  <li class="list-group-item" th:text="${history.path}"></li>
+	   <li class="list-group-item" th:text="${history.website}"></li>
+	    <li class="list-group-item" th:text="${history.language}"></li>
+    </ul>
+    <div class="card-body">
+      <a th:onclick="|window.location.href='/historyList'|"  class="card-link" style="text-decoration: underline; cursor: pointer;">Watch History</a>
+      <a  th:onclick="|window.location.href='/home'|" class="card-link"  style="text-decoration: underline; cursor: pointer;">Home</a>
+    </div>
+  </div>
+
+</body>
+
+</html>
