@@ -34,7 +34,7 @@ The project is a movie application providing users with the functionalities whic
 Below is an example of movie searh to api OMDB. For more information on how to use the API follow link in the documentation.
 
 ```
-  GET https://www.omdbapi.com/?s='+movie+'&api_key=993ea234
+  GET https://www.omdbapi.com/?s='+movie+'&api_key=apikey
 ```
 
 | Parameter | Type     | Description                |
@@ -47,7 +47,7 @@ Below is an example of movie searh to api TheMovieDB. For more information on ho
 
 
 ```
-  GET https://api.themoviedb.org/3/search/movie?api_key=bd9efc4ebe8ad9d2ff2b16778ae7a1d0&query='+movie
+  GET https://api.themoviedb.org/3/search/movie?api_key=apikey&query='+movie
 ```
 
 | Parameter | Type     | Description                       |
